@@ -1,0 +1,817 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music App</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #111;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: #181818;
+            border-bottom: 1px solid #292929;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #1db954;
+        }
+
+        .search {
+            width: 350px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            background: #292929;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* MAIN */
+        main {
+            padding: 35px 40px 150px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #aaa;
+        }
+
+        /* SONG CARDS */
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .songs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .song-card {
+            background: #181818;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .song-card:hover {
+            background: #242424;
+            transform: translateY(-4px);
+        }
+
+        .cover {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 55px;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #1db954, #064d27);
+        }
+
+        .song-card:nth-child(2) .cover {
+            background: linear-gradient(135deg, #8e2de2, #4a00e0);
+        }
+
+        .song-card:nth-child(3) .cover {
+            background: linear-gradient(135deg, #ff512f, #dd2476);
+        }
+
+        .song-card:nth-child(4) .cover {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+        }
+
+        .song-card:nth-child(5) .cover {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+        }
+
+        .song-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .song-card p {
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* PLAYLIST */
+        .playlist {
+            margin-top: 40px;
+        }
+
+        .playlist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #181818;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .playlist-item:hover {
+            background: #252525;
+        }
+
+        .playlist-number {
+            width: 35px;
+            color: #999;
+        }
+
+        .playlist-info {
+            flex: 1;
+        }
+
+        .playlist-info h4 {
+            font-size: 15px;
+        }
+
+        .playlist-info p {
+            color: #888;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .duration {
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* MUSIC PLAYER */
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: #181818;
+            border-top: 1px solid #303030;
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            z-index: 100;
+        }
+
+        .now-playing {
+            width: 25%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mini-cover {
+            width: 55px;
+            height: 55px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #1db954, #064d27);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+        }
+
+        .now-playing h4 {
+            font-size: 14px;
+        }
+
+        .now-playing p {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .controls {
+            width: 50%;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 8px;
+        }
+
+        .buttons button {
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            color: #1db954;
+        }
+
+        .play-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: white !important;
+            color: black !important;
+            font-size: 18px !important;
+        }
+
+        .progress-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-area span {
+            font-size: 10px;
+            color: #999;
+        }
+
+        .progress {
+            flex: 1;
+            height: 4px;
+            accent-color: #1db954;
+            cursor: pointer;
+        }
+
+        .volume {
+            width: 25%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume input {
+            width: 100px;
+            accent-color: #1db954;
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+
+            header {
+                padding: 0 20px;
+            }
+
+            .search {
+                width: 180px;
+            }
+
+            main {
+                padding: 25px 20px 150px;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+
+            .player {
+                height: 90px;
+                padding: 10px;
+            }
+
+            .now-playing {
+                width: 35%;
+            }
+
+            .now-playing p {
+                display: none;
+            }
+
+            .controls {
+                width: 65%;
+            }
+
+            .volume {
+                display: none;
+            }
+
+            .mini-cover {
+                width: 45px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">♫ Music</div>
+
+        <div class="search">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search songs..."
+                onkeyup="searchSongs()"
+            >
+        </div>
+    </header>
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <div class="welcome">
+            <h1>Good Evening 👋</h1>
+            <p>Listen to your favorite music.</p>
+        </div>
+
+
+        <!-- SONGS -->
+        <h2 class="section-title">Popular Songs</h2>
+
+        <div class="songs" id="songContainer">
+
+            <div class="song-card"
+                 data-title="Midnight Dreams"
+                 data-artist="Alex Morgan"
+                 onclick="selectSong('Midnight Dreams','Alex Morgan','🎵')">
+
+                <div class="cover">🎵</div>
+                <h3>Midnight Dreams</h3>
+                <p>Alex Morgan</p>
+            </div>
+
+
+            <div class="song-card"
+                 data-title="Lost in Space"
+                 data-artist="Nova"
+                 onclick="selectSong('Lost in Space','Nova','🚀')">
+
+                <div class="cover">🚀</div>
+                <h3>Lost in Space</h3>
+                <p>Nova</p>
+            </div>
+
+
+            <div class="song-card"
+                 data-title="Summer Vibes"
+                 data-artist="The Waves"
+                 onclick="selectSong('Summer Vibes','The Waves','🌴')">
+
+                <div class="cover">🌴</div>
+                <h3>Summer Vibes</h3>
+                <p>The Waves</p>
+            </div>
+
+
+            <div class="song-card"
+                 data-title="Electric Heart"
+                 data-artist="DJ Max"
+                 onclick="selectSong('Electric Heart','DJ Max','⚡')">
+
+                <div class="cover">⚡</div>
+                <h3>Electric Heart</h3>
+                <p>DJ Max</p>
+            </div>
+
+
+            <div class="song-card"
+                 data-title="Golden Sky"
+                 data-artist="Luna"
+                 onclick="selectSong('Golden Sky','Luna','🌅')">
+
+                <div class="cover">🌅</div>
+                <h3>Golden Sky</h3>
+                <p>Luna</p>
+            </div>
+
+        </div>
+
+
+        <!-- PLAYLIST -->
+        <div class="playlist">
+
+            <h2 class="section-title">Your Playlist</h2>
+
+            <div class="playlist-item"
+                 onclick="selectSong('Midnight Dreams','Alex Morgan','🎵')">
+
+                <div class="playlist-number">01</div>
+
+                <div class="playlist-info">
+                    <h4>Midnight Dreams</h4>
+                    <p>Alex Morgan</p>
+                </div>
+
+                <div class="duration">3:42</div>
+            </div>
+
+
+            <div class="playlist-item"
+                 onclick="selectSong('Lost in Space','Nova','🚀')">
+
+                <div class="playlist-number">02</div>
+
+                <div class="playlist-info">
+                    <h4>Lost in Space</h4>
+                    <p>Nova</p>
+                </div>
+
+                <div class="duration">4:10</div>
+            </div>
+
+
+            <div class="playlist-item"
+                 onclick="selectSong('Summer Vibes','The Waves','🌴')">
+
+                <div class="playlist-number">03</div>
+
+                <div class="playlist-info">
+                    <h4>Summer Vibes</h4>
+                    <p>The Waves</p>
+                </div>
+
+                <div class="duration">3:28</div>
+            </div>
+
+
+            <div class="playlist-item"
+                 onclick="selectSong('Electric Heart','DJ Max','⚡')">
+
+                <div class="playlist-number">04</div>
+
+                <div class="playlist-info">
+                    <h4>Electric Heart</h4>
+                    <p>DJ Max</p>
+                </div>
+
+                <div class="duration">4:02</div>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- MUSIC PLAYER -->
+    <div class="player">
+
+        <div class="now-playing">
+
+            <div class="mini-cover" id="miniCover">🎵</div>
+
+            <div>
+                <h4 id="currentTitle">Midnight Dreams</h4>
+                <p id="currentArtist">Alex Morgan</p>
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <div class="buttons">
+
+                <button onclick="previousSong()">⏮</button>
+
+                <button
+                    class="play-btn"
+                    id="playButton"
+                    onclick="togglePlay()">
+                    ▶
+                </button>
+
+                <button onclick="nextSong()">⏭</button>
+
+            </div>
+
+            <div class="progress-area">
+
+                <span id="currentTime">0:00</span>
+
+                <input
+                    type="range"
+                    class="progress"
+                    id="progressBar"
+                    value="0"
+                    min="0"
+                    max="100"
+                    oninput="changeProgress()"
+                >
+
+                <span id="duration">3:42</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="volume">
+
+            🔊
+
+            <input
+                type="range"
+                min="0"
+                max="100"
+                value="70"
+                id="volumeSlider"
+            >
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* SONG DATA */
+
+        const songs = [
+            {
+                title: "Midnight Dreams",
+                artist: "Alex Morgan",
+                icon: "🎵",
+                duration: 222
+            },
+            {
+                title: "Lost in Space",
+                artist: "Nova",
+                icon: "🚀",
+                duration: 250
+            },
+            {
+                title: "Summer Vibes",
+                artist: "The Waves",
+                icon: "🌴",
+                duration: 208
+            },
+            {
+                title: "Electric Heart",
+                artist: "DJ Max",
+                icon: "⚡",
+                duration: 242
+            },
+            {
+                title: "Golden Sky",
+                artist: "Luna",
+                icon: "🌅",
+                duration: 230
+            }
+        ];
+
+        let currentSong = 0;
+        let isPlaying = false;
+        let currentSeconds = 0;
+        let timer;
+
+
+        /* SELECT SONG */
+
+        function selectSong(title, artist, icon) {
+
+            currentSong = songs.findIndex(
+                song => song.title === title
+            );
+
+            document.getElementById("currentTitle").innerText = title;
+            document.getElementById("currentArtist").innerText = artist;
+            document.getElementById("miniCover").innerText = icon;
+
+            currentSeconds = 0;
+
+            updatePlayer();
+
+            isPlaying = true;
+
+            document.getElementById("playButton").innerText = "⏸";
+
+            startTimer();
+        }
+
+
+        /* PLAY / PAUSE */
+
+        function togglePlay() {
+
+            isPlaying = !isPlaying;
+
+            if (isPlaying) {
+
+                document.getElementById("playButton").innerText = "⏸";
+
+                startTimer();
+
+            } else {
+
+                document.getElementById("playButton").innerText = "▶";
+
+                clearInterval(timer);
+
+            }
+        }
+
+
+        /* TIMER */
+
+        function startTimer() {
+
+            clearInterval(timer);
+
+            timer = setInterval(() => {
+
+                if (currentSeconds < songs[currentSong].duration) {
+
+                    currentSeconds++;
+
+                    updatePlayer();
+
+                } else {
+
+                    nextSong();
+
+                }
+
+            }, 1000);
+        }
+
+
+        /* UPDATE PLAYER */
+
+        function updatePlayer() {
+
+            const song = songs[currentSong];
+
+            document.getElementById("currentTitle").innerText =
+                song.title;
+
+            document.getElementById("currentArtist").innerText =
+                song.artist;
+
+            document.getElementById("miniCover").innerText =
+                song.icon;
+
+            const minutes = Math.floor(currentSeconds / 60);
+
+            const seconds = currentSeconds % 60;
+
+            document.getElementById("currentTime").innerText =
+                minutes + ":" + String(seconds).padStart(2, "0");
+
+            document.getElementById("duration").innerText =
+                Math.floor(song.duration / 60) +
+                ":" +
+                String(song.duration % 60).padStart(2, "0");
+
+            document.getElementById("progressBar").value =
+                (currentSeconds / song.duration) * 100;
+        }
+
+
+        /* NEXT SONG */
+
+        function nextSong() {
+
+            currentSong++;
+
+            if (currentSong >= songs.length) {
+                currentSong = 0;
+            }
+
+            currentSeconds = 0;
+
+            isPlaying = true;
+
+            document.getElementById("playButton").innerText = "⏸";
+
+            updatePlayer();
+
+            startTimer();
+        }
+
+
+        /* PREVIOUS SONG */
+
+        function previousSong() {
+
+            currentSong--;
+
+            if (currentSong < 0) {
+                currentSong = songs.length - 1;
+            }
+
+            currentSeconds = 0;
+
+            isPlaying = true;
+
+            document.getElementById("playButton").innerText = "⏸";
+
+            updatePlayer();
+
+            startTimer();
+        }
+
+
+        /* PROGRESS BAR */
+
+        function changeProgress() {
+
+            const value =
+                document.getElementById("progressBar").value;
+
+            currentSeconds =
+                (value / 100) * songs[currentSong].duration;
+
+            updatePlayer();
+        }
+
+
+        /* SEARCH */
+
+        function searchSongs() {
+
+            const search =
+                document.getElementById("searchInput")
+                .value
+                .toLowerCase();
+
+            const cards =
+                document.querySelectorAll(".song-card");
+
+            cards.forEach(card => {
+
+                const title =
+                    card.dataset.title.toLowerCase();
+
+                const artist =
+                    card.dataset.artist.toLowerCase();
+
+                if (
+                    title.includes(search) ||
+                    artist.includes(search)
+                ) {
+
+                    card.style.display = "block";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+        }
+
+
+        /* VOLUME */
+
+        document
+            .getElementById("volumeSlider")
+            .addEventListener("input", function () {
+
+                console.log("Volume:", this.value);
+
+            });
+
+
+        /* INITIAL PLAYER */
+
+        updatePlayer();
+
+    </script>
+
+</body>
+</html>
+```
